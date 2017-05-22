@@ -6,10 +6,11 @@ var balls: GameObject[];
 var thread: GameObject;
 var interacter: GameObject;
 private var x = 20;
-private var y = 20;
+private var y = 40;
 private var width = 200;
 private var delta = 10;
-private var height = 90;
+private var height = 20;
+private var textWidth = 70;
 private var textFields = new Dictionary.<String, String>();
 private var shouldDeleteTrail = 0;
 private var interactionEOn: boolean = false;
@@ -17,11 +18,12 @@ private var interactionBOn: boolean = false;
 private var gravityOn: boolean = false;
 
 function resetConstraints() {
-	x = 20;
-	y = 40;
-	width = 200;
-	delta = 10;
-	height = 90;
+    x = 20;
+    y = 40;
+    width = 200;
+    delta = 10;
+    height = 20;
+    textWidth = 70;
 }
 
 function Start () {
@@ -37,19 +39,19 @@ function Start () {
 
 function OnGUI() {
 	resetConstraints();
-	GUI.Box(new Rect(10, 10, (width + delta) * (9 + balls.length) + 10, height + 30), "Menu");
+	GUI.Box(new Rect(10, 10, width + textWidth + 30, (height+delta) * (9 + balls.length) + 30), "Menu");
 	var tmpDict = new Dictionary.<String, String>();
 	for (var key: String in textFields.Keys) {
-		GUI.Box(new Rect (x, y - 20, width, height), key);
-		tmpDict[key] = GUI.TextField(Rect (x, y, width, height), textFields[key], 100);
-		x += width + delta;
+		GUI.Box(new Rect (x, y, textWidth, height), key);
+		tmpDict[key] = GUI.TextField(Rect (x + textWidth, y, width, height), textFields[key], 100);
+		y += height + delta;
 	}
-	interactionEOn = GUI.Toggle(Rect(x, y, width / 2, height), interactionEOn, "Interaction(E)");
-	x += width / 2 + delta;
-	interactionBOn = GUI.Toggle(Rect(x, y, width / 2, height), interactionBOn, "Interaction(B)");
-	x += width / 2 + delta;
+	interactionEOn = GUI.Toggle(Rect(x, y, width, height), interactionEOn, "Interaction(E)");
+	y += height / 2 + delta;
+	interactionBOn = GUI.Toggle(Rect(x, y, width, height), interactionBOn, "Interaction(B)");
+	y += height / 2 + delta;
 	gravityOn = GUI.Toggle(Rect(x, y, width / 2, height), gravityOn, "gravity");
-	x += width / 2 + delta;
+	y += height / 2 + delta;
 	textFields = tmpDict;
 	if (GUI.Button(Rect(x, y, width, height), "Preview")) {
 		for (var i = 0; i < balls.length; i++) {
@@ -59,7 +61,7 @@ function OnGUI() {
 			ball.GetComponent(PhysicsBehaviour).resetState();
 		}
 	}
-	x += width + delta;
+    y += height + delta;
 	if (GUI.Button(Rect(x, y, width, height), "Start")) {
 		thread.GetComponent(ThreadPhysics).lambda = double.Parse(textFields["lambda"]);
 		thread.GetComponent(ThreadPhysics).I = double.Parse(textFields["I"]);
