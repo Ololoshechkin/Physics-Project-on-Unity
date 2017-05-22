@@ -16,21 +16,21 @@ class ExactTransform {
 		if (stop) {
 			return;
 		}
-        if (bq.length2() == 0.0) {
-            return;
-        }
+		if (bq.length2() == 0.0) {
+			return;
+		}
 		var dt = Time.deltaTime * 0.7;
-        var bn = bq.normalize();
-        bq = bq.multiply(dt / mass);
-        var vt = velocity.scalarProduct(bn);
-        var vn = velocity.subtract(bn.multiply(vt));
-        if (vn.length2() == 0.0) {
-            return;
-        }
-        var vn2 = vn.crossProduct(bn);
-        var ang = bq.length();
-        vn = vn.multiply(Math.Cos(ang)).add(vn2.multiply(Math.Sin(ang)));
-        velocity = vn.add(bn.multiply(vt));
+		var bn = bq.normalize();
+		bq = bq.multiply(dt / mass);
+		var vt = velocity.scalarProduct(bn);
+		var vn = velocity.subtract(bn.multiply(vt));
+		if (vn.length2() == 0.0) {
+			return;
+		}
+		var vn2 = vn.crossProduct(bn);
+		var ang = bq.length();
+		vn = vn.multiply(Math.Cos(ang)).add(vn2.multiply(Math.Sin(ang)));
+		velocity = vn.add(bn.multiply(vt));
 	}
 
 	public function setForce(force: ExactVector) {

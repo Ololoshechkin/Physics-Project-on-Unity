@@ -99,17 +99,17 @@ function Start () {
 }
 
 function FixedUpdate() {
-    var force = getForceNoLorence();
-    var b = B(radiusVector());
+	var force = getForceNoLorence();
+	var b = B(radiusVector());
 	physicsMaker.applyB(b.multiply(q));
 	physicsMaker.setForce(force);
 	GetComponent(Transform).position = physicsMaker.getPos();
 }
 
 function Update () {
-    var force = getForceNoLorence();
-    var b = B(radiusVector());
-	physicsMaker.applyB(b);
+	var force = getForceNoLorence();
+	var b = B(radiusVector());
+	physicsMaker.applyB(b.multiply(q));
 	physicsMaker.setForce(force);
 	GetComponent(Transform).position = physicsMaker.getPos();
 }
