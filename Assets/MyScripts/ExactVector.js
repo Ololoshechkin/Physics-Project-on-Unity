@@ -59,10 +59,10 @@ class ExactVector {
 			x * other.y - y * other.x
 		);
 	}
-	public function sinus(other: ExactVector) {
+	public function cosinus(other: ExactVector) {
 		return scalarProduct(other) / (length() * other.length());
 	}
-	public function cosinus(other: ExactVector) {
-		return Math.Sqrt(1.0 - sinus(other) * sinus(other));
+	public function sinus(other: ExactVector) {
+		return crossProduct(other).length() / (length() * other.length());
 	}
 }

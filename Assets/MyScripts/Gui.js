@@ -5,25 +5,40 @@ import System.Collections.Generic;
 var balls: GameObject[];
 var thread: GameObject;
 var interacter: GameObject;
-private var x = 20;
-private var y = 40;
-private var width = 200;
-private var delta = 10;
-private var height = 20;
-private var textWidth = 70;
+private var x: float = 20;
+private var y: float = 40;
+private var width: float = 200;
+private var delta: float = 10;
+private var height: float = 20;
+private var textWidth: float = 70;
 private var textFields = new Dictionary.<String, String>();
 private var shouldDeleteTrail = 0;
 private var interactionEOn: boolean = false;
 private var interactionBOn: boolean = false;
 private var gravityOn: boolean = false;
+private var menuDelta: float = 30;
+private var SCREEN_HEIGHT: float = Screen.height;
+private var SCREEN_WIDTH: float = Screen.width;
+private var minSliderRatio: float;
+private var maxSliderRatio: float;
+private var hSliderValue: float = 1.0;
 
 function resetConstraints() {
-    x = 20;
-    y = 40;
-    width = 200;
-    delta = 10;
-    height = 20;
-    textWidth = 70;
+    x = 20 * hSliderValue;
+    y = 40 * hSliderValue;
+    width = 200 * hSliderValue;
+    delta = 10 * hSliderValue;
+    height = 20 * hSliderValue;
+    textWidth = 70 * hSliderValue;
+    menuDelta = 30 * hSliderValue;
+}
+
+function getBoxWidth() {
+	return width + textWidth + menuDelta;
+}
+
+function getBoxHeight() {
+	return (height + delta) * (10.0 + balls.length) + menuDelta;
 }
 
 function Start () {
@@ -35,11 +50,21 @@ function Start () {
 	for (var i = 0; i < balls.length; i++) {
 		textFields["radius(" + i + ")"] = "" + balls[i].GetComponent(Transform).position.x;
 	}
+	minSliderRatio = (SCREEN_HEIGHT / 8.0) / getBoxHeight();
+	maxSliderRatio = SCREEN_HEIGHT / getBoxHeight();
 }
 
 function OnGUI() {
 	resetConstraints();
-	GUI.Box(new Rect(10, 10, width + textWidth + 30, (height+delta) * (9 + balls.length) + 30), "Menu");
+	GUI.Box(
+		new Rect(
+			x / 2, 
+			y / 2,
+			getBoxWidth(),
+			getBoxHeight()
+		),
+		"Menu"
+	);
 	var tmpDict = new Dictionary.<String, String>();
 	for (var key: String in textFields.Keys) {
 		GUI.Box(new Rect (x, y, textWidth, height), key);
@@ -79,6 +104,18 @@ function OnGUI() {
 			ball.GetComponent(PhysicsBehaviour).startMoving();
 		}
     }
+    y += height + delta;
+    hSliderValue = GUI.HorizontalSlider(
+    	new Rect(
+    		x, 
+    		y,
+    		Math.Max(width, SCREEN_WIDTH/ 16),
+    		Math.Max(height, SCREEN_HEIGHT * 0.1)
+    	), 
+    	hSliderValue, 
+    	minSliderRatio, 
+    	maxSliderRatio
+    );
 }
 
 function Update () {
