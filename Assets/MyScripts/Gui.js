@@ -11,7 +11,7 @@ private var width: float = 200;
 private var delta: float = 10;
 private var height: float = 20;
 private var textWidth: float = 70;
-private var textFields = new Dictionary.<String, String>();
+private var textFields = new Dictionary.<String, Array>();
 private var shouldDeleteTrail = 0;
 private var interactionEOn: boolean = false;
 private var interactionBOn: boolean = false;
@@ -42,33 +42,57 @@ function getBoxHeight() {
 }
 
 function Start () {
-	textFields["q"] = "-0.2";
-	textFields["lambda"] = "0.00000001";
-	textFields["velocity"] = "50";
-	textFields["mass"] = "0.01";
-	textFields["I"] = "10";
+	textFields["q"] = ["-0.2"];
+	textFields["lambda"] = ["0.00000001"];
+	textFields["velocity"] = ["50"];
+	textFields["mass"] = ["0.01"];
+	textFields["I"] = ["10"];
 	for (var i = 0; i < balls.length; i++) {
-		textFields["radius(" + i + ")"] = "" + balls[i].GetComponent(Transform).position.x;
+		textFields["radius(" + i + ")"] = [];
+		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.x);
+		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.y);
+		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.z);
 	}
 	minSliderRatio = (SCREEN_HEIGHT / 8.0) / getBoxHeight();
 	maxSliderRatio = SCREEN_HEIGHT / getBoxHeight();
+	hSliderValue = minSliderRatio + (maxSliderRatio - minSliderRatio) * 0.8;
+}
+
+function getPosition(i) {
+	return Vector3(
+		double.Parse(textFields["radius(" + i + ")"][0].ToString()),
+		double.Parse(textFields["radius(" + i + ")"][1].ToString()),
+		double.Parse(textFields["radius(" + i + ")"][2].ToString())
+	);
 }
 
 function OnGUI() {
 	resetConstraints();
 	GUI.Box(
 		new Rect(
-			x / 2, 
+			x / 2,
 			y / 2,
 			getBoxWidth(),
 			getBoxHeight()
 		),
 		"Menu"
 	);
-	var tmpDict = new Dictionary.<String, String>();
+	var tmpDict = new Dictionary.<String, Array>();
 	for (var key: String in textFields.Keys) {
 		GUI.Box(new Rect (x, y, textWidth, height), key);
-		tmpDict[key] = GUI.TextField(Rect (x + textWidth, y, width, height), textFields[key], 100);
+		var cnt: double = textFields[key].length;
+		tmpDict[key] = [];
+		var curDelta = 0;
+		for (var text in textFields[key]) {
+			tmpDict[key].Push(
+				GUI.TextField(
+					Rect(x + textWidth + curDelta, y, width / cnt, height), 
+					text, 
+					100
+				)
+			);
+			curDelta += width / cnt;
+		}
 		y += height + delta;
 	}
 	interactionEOn = GUI.Toggle(Rect(x, y, width, height), interactionEOn, "Interaction(E)");
@@ -81,24 +105,24 @@ function OnGUI() {
 	if (GUI.Button(Rect(x, y, width, height), "Preview")) {
 		for (var i = 0; i < balls.length; i++) {
 			var ball = balls[i];
-			ball.GetComponent(Transform).position = Vector3(double.Parse(textFields["radius(" + i + ")"]), 0, 0);
+			ball.GetComponent(Transform).position = getPosition(i);
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();
 		}
 	}
     y += height + delta;
 	if (GUI.Button(Rect(x, y, width, height), "Start")) {
-		thread.GetComponent(ThreadPhysics).lambda = double.Parse(textFields["lambda"]);
-		thread.GetComponent(ThreadPhysics).I = double.Parse(textFields["I"]);
+		thread.GetComponent(ThreadPhysics).lambda = double.Parse(textFields["lambda"][0].ToString());
+		thread.GetComponent(ThreadPhysics).I = double.Parse(textFields["I"][0].ToString());
 		interacter.GetComponent(BallsInteraction).activeE = interactionEOn;
 		interacter.GetComponent(BallsInteraction).activeB = interactionBOn;
 		for (i = 0; i < balls.length; i++) {
 		    ball = balls[i];
-			ball.GetComponent(Transform).position = Vector3(double.Parse(textFields["radius(" + i + ")"]), 0, 0);
+			ball.GetComponent(Transform).position = getPosition(i);
 			ball.GetComponent(PhysicsBehaviour).gravityOn = gravityOn;
-			ball.GetComponent(PhysicsBehaviour).q = double.Parse(textFields["q"]);
-			ball.GetComponent(PhysicsBehaviour).mass = double.Parse(textFields["mass"]);
-			ball.GetComponent(PhysicsBehaviour).velocityModulo = double.Parse(textFields["velocity"]);
+			ball.GetComponent(PhysicsBehaviour).q = double.Parse(textFields["q"][0].ToString());
+			ball.GetComponent(PhysicsBehaviour).mass = double.Parse(textFields["mass"][0].ToString());
+			ball.GetComponent(PhysicsBehaviour).velocityModulo = double.Parse(textFields["velocity"][0].ToString());
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();
 			ball.GetComponent(PhysicsBehaviour).startMoving();
