@@ -33,6 +33,9 @@ class ExactVector {
 	public function divide(alpha: double) {
 		return ExactVector(x / alpha, y / alpha, z / alpha);
 	}
+	public function length2() {
+		return x * x + y * y + z * z;
+	}
 	public function length() {
 		return Math.Sqrt(x * x + y * y + z * z);
 	}

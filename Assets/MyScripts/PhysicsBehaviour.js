@@ -67,8 +67,8 @@ function gravityForce() {
 	return g.multiply(mass);
 }
 
-function getForce() {
-	return kullonsForce().add(gravityForce()).add(lorenceForce());
+function getForceNoLorence() {
+	return kullonsForce().add(gravityForce());
 }	
 
 public function startMoving() {
@@ -99,11 +99,17 @@ function Start () {
 }
 
 function FixedUpdate() {
-	physicsMaker.setForce(getForce());
+    var force = getForceNoLorence();
+    var b = B(radiusVector());
+	physicsMaker.applyB(b.multiply(q));
+	physicsMaker.setForce(force);
 	GetComponent(Transform).position = physicsMaker.getPos();
 }
 
 function Update () {
-	physicsMaker.setForce(getForce());
+    var force = getForceNoLorence();
+    var b = B(radiusVector());
+	physicsMaker.applyB(b);
+	physicsMaker.setForce(force);
 	GetComponent(Transform).position = physicsMaker.getPos();
 }

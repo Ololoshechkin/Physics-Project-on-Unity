@@ -6,11 +6,31 @@ class ExactTransform {
 	private var velocity: ExactVector = ExactVector(0, 0, 0);
 	private var mass: double;
 	private var stop = true;
-	private var acceleration: ExactVector;
 
 	public function ExactTransform(pos: Vector3, m: double) {
 		this.coordinate = ExactVector(pos);
 		this.mass = m;
+	}
+
+	public function applyB(bq: ExactVector) {
+		if (stop) {
+			return;
+		}
+        if (bq.length2() == 0.0) {
+            return;
+        }
+		var dt = Time.deltaTime * 0.7;
+        var bn = bq.normalize();
+        bq = bq.multiply(dt / mass);
+        var vt = velocity.scalarProduct(bn);
+        var vn = velocity.subtract(bn.multiply(vt));
+        if (vn.length2() == 0.0) {
+            return;
+        }
+        var vn2 = vn.crossProduct(bn);
+        var ang = bq.length();
+        vn = vn.multiply(Math.Cos(ang)).add(vn2.multiply(Math.Sin(ang)));
+        velocity = vn.add(bn.multiply(vt));
 	}
 
 	public function setForce(force: ExactVector) {
@@ -19,7 +39,7 @@ class ExactTransform {
 		}
 		var dt = Time.deltaTime * 0.7;
 		Debug.Log("dt = " + dt);
-		acceleration = force.divide(mass);
+		var acceleration = force.divide(mass);
 		coordinate = coordinate.add(velocity.multiply(dt));
 		velocity = velocity.add(acceleration.multiply(dt));
 	}
