@@ -1,9 +1,9 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{1FD1497B-8F99-BBAB-6757-1EA2F73E1E1D}") = "PhysicsThread", "Assembly-CSharp-firstpass.csproj", "{1744B6D5-B009-8D24-E598-70DE0CB3EEA3}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsThread", "Assembly-CSharp-firstpass.csproj", "{1744B6D5-B009-8D24-E598-70DE0CB3EEA3}"
 EndProject
-Project("{1FD1497B-8F99-BBAB-6757-1EA2F73E1E1D}") = "PhysicsThread", "Assembly-CSharp-Editor.csproj", "{240EB34C-740E-C05A-36A0-D3714AB9C4AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsThread", "Assembly-CSharp-Editor.csproj", "{240EB34C-740E-C05A-36A0-D3714AB9C4AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
