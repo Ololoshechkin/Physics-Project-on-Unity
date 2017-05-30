@@ -6,27 +6,28 @@ var q: double;
 var velocityModulo: double;
 var defaultDirection: ExactVector;
 var velocityXAlpha: double;
+var velocityYAlpha: double;
 var velocityZAlpha: double;
 var gravityOn: boolean;
-var velocityPrefab: GameObject;
+var arrow: GameObject;
 
-private var arrow: GameObject;
 private var arrowCreated = false;
 
 function velocityDirection() {
-	return defaultDirection.rotateX(velocityXAlpha).rotateZ(velocityZAlpha).normalize();
+	return defaultDirection.rotateX(velocityXAlpha).rotateY(velocityYAlpha).rotateZ(velocityZAlpha).normalize();
 }
 
+
+private var angularNormalization: double = 180.0 / 3.141582653985;
+
 function createArrow() {
-	arrow = Instantiate(
-		velocityPrefab, 
-		GetComponent(Transform).position, 
-		Quaternion.FromToRotation(
-			Vector3(0, 0, 0),
-			velocityDirection().toVector3()
-		)
-	);
+	arrow.GetComponent(MeshRenderer).enabled = true;
 	arrowCreated = true;
+}
+
+function destroyArrow() {
+	arrow.GetComponent(MeshRenderer).enabled = false;
+	arrowCreated = false;
 }
 
 function getVelocity() {
@@ -37,7 +38,11 @@ function drawVelocity() {
 	if (!arrowCreated) {
 		createArrow();
 	}
-	arrow.GetComponent(Transform).rotation = Quaternion.Euler(velocityXAlpha, 0, velocityZAlpha);
+	var arrowRotation = Quaternion.LookRotation(
+		velocityDirection().rotateXZ().multiply(-1.0).toVector3()
+	);
+	Debug.Log(arrowRotation);
+	arrow.GetComponent(Transform).rotation = arrowRotation;
 }
 
 function alpha() {
@@ -106,8 +111,8 @@ function getForceNoLorence() {
 }	
 
 public function startMoving() {
-	Destroy(arrow);
-	arrowCreated = false;
+	destroyArrow();
+	physicsMaker.setVelocity(getVelocity());
 	physicsMaker.start();
 }
 
@@ -119,8 +124,7 @@ public function resetState() {
 		mass
 	);
 	physicsMaker.setVelocity(getVelocity());
-	Destroy(arrow);
-	arrowCreated = false;
+	destroyArrow();
 	drawVelocity();
 }
 

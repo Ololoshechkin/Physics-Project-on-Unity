@@ -22,10 +22,13 @@ private var SCREEN_WIDTH: float = Screen.width;
 private var minSliderRatio: float;
 private var maxSliderRatio: float;
 private var hSliderValue: float = 1.0;
+
 private var velocityXRotate: double = 0;
+private var velocityYRotate: double = 0;
 private var velocityZRotate: double = 0;
+
 private var MIN_ALPHA: double = 0.0;
-private var MAX_ALPHA: double = 180.0;//3.141592653589;
+private var MAX_ALPHA: double = 2 * 3.141592653589;
 
 function resetConstraints() {
     x = 20 * hSliderValue;
@@ -113,6 +116,14 @@ function OnGUI() {
 		MAX_ALPHA
 	);
 	y += height / 2 + delta;
+	GUI.Label (Rect (x, y, width / 3 + delta, height), "v (rotation y):");
+	velocityYRotate = GUI.HorizontalSlider(
+		Rect(x + width / 3 + delta, y, width * 2 / 3, height),
+		velocityYRotate, 
+		MIN_ALPHA, 
+		MAX_ALPHA
+	);
+	y += height / 2 + delta;
 	GUI.Label (Rect (x, y, width / 3 + delta, height), "v (rotation z):");
 	velocityZRotate = GUI.HorizontalSlider(
 		Rect(x + width / 3 + delta, y, width * 2 / 3, height),
@@ -122,17 +133,18 @@ function OnGUI() {
 	);
 	y += height / 2 + delta;
 	textFields = tmpDict;
-	if (GUI.Button(Rect(x, y, width, height), "Preview")) {
+	if (true) {//GUI.Button(Rect(x, y, width, height), "Preview")) {
 		for (var i = 0; i < balls.length; i++) {
 			var ball = balls[i];
 			ball.GetComponent(Transform).position = getPosition(i);
 			ball.GetComponent(PhysicsBehaviour).velocityXAlpha = velocityXRotate;
+			ball.GetComponent(PhysicsBehaviour).velocityYAlpha = velocityYRotate;
 			ball.GetComponent(PhysicsBehaviour).velocityZAlpha = velocityZRotate;
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();
 		}
 	}
-    y += height + delta;
+    //y += height + delta;
 	if (GUI.Button(Rect(x, y, width, height), "Start")) {
 		thread.GetComponent(ThreadPhysics).lambda = double.Parse(textFields["lambda"][0].ToString());
 		thread.GetComponent(ThreadPhysics).I = double.Parse(textFields["I"][0].ToString());
@@ -146,6 +158,7 @@ function OnGUI() {
 			ball.GetComponent(PhysicsBehaviour).mass = double.Parse(textFields["mass"][0].ToString());
 			ball.GetComponent(PhysicsBehaviour).velocityModulo = double.Parse(textFields["velocity"][0].ToString());
 			ball.GetComponent(PhysicsBehaviour).velocityXAlpha = velocityXRotate;
+			ball.GetComponent(PhysicsBehaviour).velocityYAlpha = velocityYRotate;
 			ball.GetComponent(PhysicsBehaviour).velocityZAlpha = velocityZRotate;
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();

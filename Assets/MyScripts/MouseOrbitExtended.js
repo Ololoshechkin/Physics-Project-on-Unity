@@ -59,7 +59,6 @@ function LateUpdate () {
  
  
 static function ClampAngle (angle : float, min : float, max : float) {
-	Debug.Log("min = " + min + " max = " + max);
 	if (angle < -360)
 		angle += 360;
 	if (angle > 360)

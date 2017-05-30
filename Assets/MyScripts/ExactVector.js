@@ -68,6 +68,9 @@ class ExactVector {
 	public function rotateX(alpha: double) {
 		return Martrix3d.rotaterOverX(alpha).mulVec(this);
 	}
+	public function rotateY(alpha: double) {
+		return Martrix3d.rotaterOverY(alpha).mulVec(this);
+	}
 	public function rotateZ(beta: double) {
 		return Martrix3d.rotaterOverZ(beta).mulVec(this);
 	}
@@ -88,9 +91,9 @@ class Martrix3d {
 	}
 
 	private function productRowVec(row: int, v: ExactVector) {
-		var sum = 0;
+		var sum = 0.0d;
 		for (var j = 0; j < 3; j++) {
-			sum += data[row][j] * (j == 0 ? v.x : j == 1 ? v.y : v.z); 
+			sum += data[row][j] * (j == 0 ? v.x : (j == 1 ? v.y : v.z)); 
 		}
 		return sum;
 	}
@@ -105,17 +108,25 @@ class Martrix3d {
 
 	public static function rotaterOverX(alpha: double) {
 		var result = Martrix3d();
-		result.setRow(0, [1d, 		0d, 			0d		  ]);
-		result.setRow(1, [0d, Mathf.Cos(alpha), -Mathf.Sin(alpha)]);
-		result.setRow(2, [0d, Mathf.Sin(alpha), Mathf.Cos(alpha)]);
+		result.setRow(0, [1d, 0d, 				0d			   ]);
+		result.setRow(1, [0d, Math.Cos(alpha), -Math.Sin(alpha)]);
+		result.setRow(2, [0d, Math.Sin(alpha),  Math.Cos(alpha)]);
+		return result;
+	}
+
+	public static function rotaterOverY(alpha: double) {
+		var result = Martrix3d();
+		result.setRow(0, [Math.Cos(alpha),  0d, Math.Sin(alpha)]);
+		result.setRow(1, [0d, 				1d, 			 0d]);
+		result.setRow(2, [-Math.Sin(alpha), 0d, Math.Cos(alpha)]);
 		return result;
 	}
 
 	public static function rotaterOverZ(alpha: double) {
 		var result = Martrix3d();
-		result.setRow(0, [Mathf.Cos(alpha), -Mathf.Sin(alpha), 0d]);
-		result.setRow(1, [Mathf.Sin(alpha), Mathf.Cos(alpha), 0d]);
-		result.setRow(2, [0d, 					0d, 		1d]);
+		result.setRow(0, [Math.Cos(alpha), -Math.Sin(alpha), 0d]);
+		result.setRow(1, [Math.Sin(alpha), Math.Cos(alpha), 0d]);
+		result.setRow(2, [0d, 					0d, 		  1d]);
 		return result;
 	}
 
