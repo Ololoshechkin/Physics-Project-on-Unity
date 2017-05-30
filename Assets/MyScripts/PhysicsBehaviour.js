@@ -4,7 +4,41 @@ var thread : GameObject;
 var mass: double;
 var q: double;
 var velocityModulo: double;
+var defaultDirection: ExactVector;
+var velocityXAlpha: double;
+var velocityZAlpha: double;
 var gravityOn: boolean;
+var velocityPrefab: GameObject;
+
+private var arrow: GameObject;
+private var arrowCreated = false;
+
+function velocityDirection() {
+	return defaultDirection.rotateX(velocityXAlpha).rotateZ(velocityZAlpha).normalize();
+}
+
+function createArrow() {
+	arrow = Instantiate(
+		velocityPrefab, 
+		GetComponent(Transform).position, 
+		Quaternion.FromToRotation(
+			Vector3(0, 0, 0),
+			defaultDirection.toVector3()
+		)
+	);
+	arrowCreated = true;
+}
+
+function getVelocity() {
+	return velocityDirection().multiply(velocityModulo);
+}
+
+function drawVelocity() {
+	if (!arrowCreated) {
+		createArrow();
+	}
+	arrow.GetComponent(Transform).rotation = Quaternion.Euler(velocityXAlpha, 0, velocityZAlpha);
+}
 
 function alpha() {
 	return 0.00000125663706 / (4 * 3.141592653589) * q;
@@ -72,6 +106,8 @@ function getForceNoLorence() {
 }	
 
 public function startMoving() {
+	Destroy(arrow);
+	arrowCreated = false;
 	physicsMaker.start();
 }
 
@@ -82,9 +118,8 @@ public function resetState() {
 		),
 		mass
 	);
-	physicsMaker.setVelocity(
-		radiusVector().normalize().rotateXZ().multiply(velocityModulo)
-	);
+	physicsMaker.setVelocity(getVelocity());
+	drawVelocity();
 }
 
 function Start () {
@@ -93,9 +128,9 @@ function Start () {
 		mass
 	);
 	threadPos = ExactVector(thread.transform.position);
-	physicsMaker.setVelocity(
-		radiusVector().normalize().rotateXZ().multiply(velocityModulo)
-	);
+	defaultDirection = radiusVector().normalize().rotateXZ();
+	drawVelocity();
+	physicsMaker.setVelocity(getVelocity());
 }
 
 function FixedUpdate() {
