@@ -25,7 +25,7 @@ private var hSliderValue: float = 1.0;
 private var velocityXRotate: double = 0;
 private var velocityZRotate: double = 0;
 private var MIN_ALPHA: double = 0.0;
-private var MAX_ALPHA: double = 3.141592653589;
+private var MAX_ALPHA: double = 180.0;//3.141592653589;
 
 function resetConstraints() {
     x = 20 * hSliderValue;
