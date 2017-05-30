@@ -106,15 +106,15 @@ class Martrix3d {
 	public static function rotaterOverX(alpha: double) {
 		var result = Martrix3d();
 		result.setRow(0, [1d, 		0d, 			0d		  ]);
-		result.setRow(1, [0d, Math.Cos(alpha), -Math.Sin(alpha)]);
-		result.setRow(2, [0d, Math.Sin(alpha), Math.Cos(alpha)]);
+		result.setRow(1, [0d, Mathf.Cos(alpha), -Mathf.Sin(alpha)]);
+		result.setRow(2, [0d, Mathf.Sin(alpha), Mathf.Cos(alpha)]);
 		return result;
 	}
 
 	public static function rotaterOverZ(alpha: double) {
 		var result = Martrix3d();
-		result.setRow(0, [Math.Cos(alpha), -Math.Sin(alpha), 0d]);
-		result.setRow(1, [Math.Sin(alpha), Math.Cos(alpha), 0d]);
+		result.setRow(0, [Mathf.Cos(alpha), -Mathf.Sin(alpha), 0d]);
+		result.setRow(1, [Mathf.Sin(alpha), Mathf.Cos(alpha), 0d]);
 		result.setRow(2, [0d, 					0d, 		1d]);
 		return result;
 	}

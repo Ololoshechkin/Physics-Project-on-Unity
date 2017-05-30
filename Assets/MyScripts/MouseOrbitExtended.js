@@ -13,6 +13,7 @@ var distanceMax = 15;
 private var x = 0.0;
 private var y = 0.0;
  
+var isActive = true;
  
 @script AddComponentMenu("Camera-Control/Mouse Orbit")
  
@@ -29,6 +30,9 @@ function Start () {
 }
  
 function LateUpdate () {
+	if (!isActive) {
+		return;
+	}
     if (target) {
         x += Input.GetAxis("Mouse X") * xSpeed * 0.02;
         y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02;
@@ -55,6 +59,7 @@ function LateUpdate () {
  
  
 static function ClampAngle (angle : float, min : float, max : float) {
+	Debug.Log("min = " + min + " max = " + max);
 	if (angle < -360)
 		angle += 360;
 	if (angle > 360)

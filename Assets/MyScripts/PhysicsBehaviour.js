@@ -23,7 +23,7 @@ function createArrow() {
 		GetComponent(Transform).position, 
 		Quaternion.FromToRotation(
 			Vector3(0, 0, 0),
-			defaultDirection.toVector3()
+			velocityDirection().toVector3()
 		)
 	);
 	arrowCreated = true;
@@ -119,6 +119,8 @@ public function resetState() {
 		mass
 	);
 	physicsMaker.setVelocity(getVelocity());
+	Destroy(arrow);
+	arrowCreated = false;
 	drawVelocity();
 }
 

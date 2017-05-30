@@ -16,4 +16,7 @@ function Update () {
 		curTarget = (curTarget + 1) % targets.length;
 		setTarget();
     }
+    if (Input.GetKeyDown ("r")) {
+		GetComponent(MouseOrbitExtended).isActive = !GetComponent(MouseOrbitExtended).isActive; 
+    }
 }

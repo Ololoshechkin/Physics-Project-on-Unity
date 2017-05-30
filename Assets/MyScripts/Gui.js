@@ -126,6 +126,8 @@ function OnGUI() {
 		for (var i = 0; i < balls.length; i++) {
 			var ball = balls[i];
 			ball.GetComponent(Transform).position = getPosition(i);
+			ball.GetComponent(PhysicsBehaviour).velocityXAlpha = velocityXRotate;
+			ball.GetComponent(PhysicsBehaviour).velocityZAlpha = velocityZRotate;
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();
 		}
