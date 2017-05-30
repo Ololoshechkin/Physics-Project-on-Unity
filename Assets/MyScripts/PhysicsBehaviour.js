@@ -17,9 +17,6 @@ function velocityDirection() {
 	return defaultDirection.rotateX(velocityXAlpha).rotateY(velocityYAlpha).rotateZ(velocityZAlpha).normalize();
 }
 
-
-private var angularNormalization: double = 180.0 / 3.141582653985;
-
 function createArrow() {
 	arrow.GetComponent(MeshRenderer).enabled = true;
 	arrowCreated = true;
@@ -38,11 +35,9 @@ function drawVelocity() {
 	if (!arrowCreated) {
 		createArrow();
 	}
-	var arrowRotation = Quaternion.LookRotation(
+	arrow.GetComponent(Transform).rotation = Quaternion.LookRotation(
 		velocityDirection().rotateXZ().multiply(-1.0).toVector3()
 	);
-	Debug.Log(arrowRotation);
-	arrow.GetComponent(Transform).rotation = arrowRotation;
 }
 
 function alpha() {
