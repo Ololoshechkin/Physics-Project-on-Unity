@@ -19,6 +19,7 @@ private var gravityOn: boolean = false;
 private var menuDelta: float = 30;
 private var SCREEN_HEIGHT: float = Screen.height;
 private var SCREEN_WIDTH: float = Screen.width;
+
 private var minSliderRatio: float;
 private var maxSliderRatio: float;
 private var hSliderValue: float = 1.0;
@@ -29,6 +30,8 @@ private var velocityZRotate: double = 0;
 
 private var MIN_ALPHA: double = 0.0;
 private var MAX_ALPHA: double = 2 * 3.141592653589;
+
+private var onlineChanges = true;
 
 function resetConstraints() {
     x = 20 * hSliderValue;
@@ -133,7 +136,7 @@ function OnGUI() {
 	);
 	y += height / 2 + delta;
 	textFields = tmpDict;
-	if (true) {//GUI.Button(Rect(x, y, width, height), "Preview")) {
+	if (onlineChanges || GUI.Button(Rect(x, y, width, height), "Preview")) {
 		for (var i = 0; i < balls.length; i++) {
 			var ball = balls[i];
 			ball.GetComponent(Transform).position = getPosition(i);
@@ -143,9 +146,11 @@ function OnGUI() {
 			shouldDeleteTrail = 10;
 			ball.GetComponent(PhysicsBehaviour).resetState();
 		}
+		onlineChanges = true;
 	}
-    //y += height + delta;
+    y += height + delta;
 	if (GUI.Button(Rect(x, y, width, height), "Start")) {
+		onlineChanges = false;
 		thread.GetComponent(ThreadPhysics).lambda = double.Parse(textFields["lambda"][0].ToString());
 		thread.GetComponent(ThreadPhysics).I = double.Parse(textFields["I"][0].ToString());
 		interacter.GetComponent(BallsInteraction).activeE = interactionEOn;
@@ -189,4 +194,3 @@ function Update () {
 		}
 	}
 }
-
