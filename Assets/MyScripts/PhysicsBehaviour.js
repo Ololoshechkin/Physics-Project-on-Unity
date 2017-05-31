@@ -135,17 +135,19 @@ function Start () {
 }
 
 function FixedUpdate() {
-	var force = getForceNoLorence();
-	var b = B(radiusVector());
-	physicsMaker.applyB(b.multiply(q));
-	physicsMaker.setForce(force);
-	GetComponent(Transform).position = physicsMaker.getPos();
+	for (var i = 0; i < 30; i++) {
+		var force = getForceNoLorence();
+		var b = B(radiusVector());
+		physicsMaker.applyB(b.multiply(q));
+		physicsMaker.setForce(force);
+		GetComponent(Transform).position = physicsMaker.getPos();
+	}
 }
 
 function Update () {
-	var force = getForceNoLorence();
+	/*var force = getForceNoLorence();
 	var b = B(radiusVector());
 	physicsMaker.applyB(b.multiply(q));
 	physicsMaker.setForce(force);
-	GetComponent(Transform).position = physicsMaker.getPos();
+	GetComponent(Transform).position = physicsMaker.getPos();*/
 }

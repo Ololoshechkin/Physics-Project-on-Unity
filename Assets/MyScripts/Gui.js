@@ -136,7 +136,7 @@ function OnGUI() {
 	);
 	y += height / 2 + delta;
 	textFields = tmpDict;
-	if (onlineChanges || GUI.Button(Rect(x, y, width, height), "Preview")) {
+	if (GUI.Button(Rect(x, y, width, height), "Preview") || onlineChanges) {
 		for (var i = 0; i < balls.length; i++) {
 			var ball = balls[i];
 			ball.GetComponent(Transform).position = getPosition(i);

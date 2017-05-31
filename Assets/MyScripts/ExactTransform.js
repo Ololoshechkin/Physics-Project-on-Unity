@@ -37,7 +37,7 @@ class ExactTransform {
 		if (stop) {
 			return;
 		}
-		var dt = Time.deltaTime * 0.7;
+		var dt = Time.deltaTime * 0.7 / 30.0;
 		var acceleration = force.divide(mass);
 		coordinate = coordinate.add(velocity.multiply(dt));
 		velocity = velocity.add(acceleration.multiply(dt));
