@@ -19,7 +19,7 @@ class ExactTransform {
 		if (bq.length2() == 0.0) {
 			return;
 		}
-		var dt = Time.deltaTime * 0.7 / 200.0;
+		var dt = Time.deltaTime * 0.7 / 100.0;
 		var bn = bq.normalize();
 		bq = bq.multiply(dt / mass);
 		var vt = velocity.scalarProduct(bn);
@@ -37,7 +37,7 @@ class ExactTransform {
 		if (stop) {
 			return;
 		}
-		var dt = Time.deltaTime * 0.7 / 200.0;
+		var dt = 0.00015 * 2.0;
 		var acceleration = force.divide(mass);
 		coordinate = coordinate.add(velocity.multiply(dt));
 		velocity = velocity.add(acceleration.multiply(dt));

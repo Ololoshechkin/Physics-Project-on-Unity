@@ -1,11 +1,14 @@
 ﻿#pragma strict
 
 import System.Collections.Generic;
+import UnityEngine.SceneManagement;
 
 var balls: GameObject[];
 var thread: GameObject;
 var interacter: GameObject;
 var tailTime = 1000.0;
+var immutablePositions = false;
+var editingKEnabled = false;
 private var x: float = 20;
 private var y: float = 40;
 private var width: float = 200;
@@ -13,6 +16,7 @@ private var delta: float = 10;
 private var height: float = 20;
 private var textWidth: float = 70;
 private var textFields = new Dictionary.<String, Array>();
+private var immutablePosDict = new Dictionary.<String, Array>();
 private var shouldDeleteTrail = 0;
 private var interactionEOn: boolean = false;
 private var interactionBOn: boolean = false;
@@ -48,8 +52,10 @@ function getBoxWidth() {
 	return width + textWidth + menuDelta;
 }
 
+private var boxHConst = 13.0;
+
 function getBoxHeight() {
-	return (height + delta) * (12.0 + balls.length) + menuDelta;
+	return (height + delta) * (boxHConst + balls.length) + menuDelta;
 }
 
 function Start () {
@@ -58,11 +64,25 @@ function Start () {
 	textFields["velocity"] = ["50"];
 	textFields["mass"] = ["0.01"]; 
 	textFields["I"] = ["0.0"];
-	for (var i = 0; i < balls.length; i++) {
-		textFields["radius(" + i + ")"] = [];
-		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.x);
-		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.y);
-		textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.z);
+	if (editingKEnabled) {
+		textFields["k"] = ["1.0"];
+		boxHConst += 1.0;
+	}
+	if (immutablePositions) {
+		boxHConst -= balls.length;
+		for (var i = 0; i < balls.length; i++) {
+			immutablePosDict["radius(" + i + ")"] = [];
+			immutablePosDict["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.x);
+			immutablePosDict["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.y);
+			immutablePosDict["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.z);
+		}
+	} else {
+		for (i = 0; i < balls.length; i++) {
+			textFields["radius(" + i + ")"] = [];
+			textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.x);
+			textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.y);
+			textFields["radius(" + i + ")"].Push("" + balls[i].GetComponent(Transform).position.z);
+		}
 	}
 	minSliderRatio = (SCREEN_HEIGHT / 8.0) / getBoxHeight();
 	maxSliderRatio = SCREEN_HEIGHT / getBoxHeight();
@@ -70,6 +90,13 @@ function Start () {
 }
 
 function getPosition(i) {
+	if (immutablePositions) {
+		return Vector3(
+			double.Parse(immutablePosDict["radius(" + i + ")"][0].ToString()),
+			double.Parse(immutablePosDict["radius(" + i + ")"][1].ToString()),
+			double.Parse(immutablePosDict["radius(" + i + ")"][2].ToString())
+		);
+	}
 	return Vector3(
 		double.Parse(textFields["radius(" + i + ")"][0].ToString()),
 		double.Parse(textFields["radius(" + i + ")"][1].ToString()),
@@ -136,6 +163,14 @@ function OnGUI() {
 		MAX_ALPHA
 	);
 	y += height / 2 + delta;
+	GUI.Label (Rect (x, y, width / 3 + delta, height), "tail length:");
+	tailTime = GUI.HorizontalSlider(
+		Rect(x + width / 3 + delta, y, width * 2 / 3, height),
+		tailTime, 
+		0, 
+		1000
+	);
+	y += height / 2 + delta;
 	textFields = tmpDict;
 	if (GUI.Button(Rect(x, y, width, height), "Preview") || onlineChanges) {
 		for (var i = 0; i < balls.length; i++) {
@@ -170,6 +205,11 @@ function OnGUI() {
 			ball.GetComponent(PhysicsBehaviour).resetState();
 			ball.GetComponent(PhysicsBehaviour).startMoving();
 		}
+    }
+    y += height + delta;
+    if (GUI.Button(Rect(x, y, width, height), "All scenes")) {
+    	Application.LoadLevel("MainScene");
+    	return;
     }
     y += height + delta;
     hSliderValue = GUI.HorizontalSlider(

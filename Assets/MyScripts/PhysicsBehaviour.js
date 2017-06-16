@@ -16,7 +16,7 @@ var bindingObject: GameObject[];
 var bindingMiddleCilinder: GameObject;
 private var bindingMiddle: GameObject[];
 private var length: double[];
-var k: double = 0.001;
+var k: double = 100000.0;
 
 function getExactPosition() {
 	return physicsMaker.getPos();
@@ -203,7 +203,7 @@ function Start () {
 }
 
 function FixedUpdate() {
-	for (var i = 0; i < 200; i++) {
+	for (var i = 0; i < 50; i++) {
 		var force = getForceNoLorence();
 		var b = B(radiusVector());
 		physicsMaker.applyB(b.multiply(q));
