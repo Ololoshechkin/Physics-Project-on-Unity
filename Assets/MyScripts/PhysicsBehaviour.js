@@ -10,6 +10,67 @@ var velocityYAlpha: double;
 var velocityZAlpha: double;
 var gravityOn: boolean;
 var arrow: GameObject;
+var bindingEnabled = false;
+var shouldDrawBinding = false;
+var bindingObject: GameObject[];
+var bindingMiddleCilinder: GameObject;
+private var bindingMiddle: GameObject[];
+private var length: double[];
+var k: double = 0.001;
+
+function getExactPosition() {
+	return physicsMaker.getPos();
+}
+
+function distToBinding(i: int) {
+	var ithBind = bindingObject[i];
+	return ithBind.GetComponent(PhysicsBehaviour).getExactPosition().subtract(getExactPosition()).length();
+}
+
+function dirToBinding(i: int) {
+	var ithBind = bindingObject[i];
+	return ithBind.GetComponent(PhysicsBehaviour).getExactPosition().subtract(getExactPosition()).normalize();
+}
+
+function dxBinding(i: int) {
+	var len222: double = length[i];
+	return distToBinding(i) - len222;
+}
+
+function ithHookesForce(i: int) {
+	return dirToBinding(i).multiply(dxBinding(i)).multiply(k);
+}
+
+function HookesForce() {
+	if (!bindingEnabled) {
+		return ExactVector(0, 0, 0);
+	}
+	var ans = ExactVector(0, 0, 0);
+	for (var i = 0; i < bindingObject.length; i++) {
+		ans = ans.add(ithHookesForce(i));
+	}
+	return ans;
+}
+
+function drawBinding(i: int) {
+	Debug.Log("drawing : " + i);
+	var dirBin = dirToBinding(i);
+	var distBin = distToBinding(i);
+	var dirBinMulDist = dirBin.multiply(distBin);
+	var curBindingMiddle: GameObject = bindingMiddle[i];
+	if (shouldDrawBinding) {
+		curBindingMiddle.GetComponent(Transform).position = getExactPosition().add(
+			dirBinMulDist.multiply(0.5)).toVector3();
+		curBindingMiddle.GetComponent(Transform).LookAt(bindingObject[i].GetComponent(Transform).position);
+		curBindingMiddle.GetComponent(Transform).localScale = Vector3(0.33, 0.33, distBin * 0.95);
+	}
+}
+
+function drawBindings() {
+	for (var i = 0; i < bindingMiddle.length; i++) {
+		drawBinding(i);
+	}
+}
 
 private var arrowCreated = false;
 
@@ -102,8 +163,8 @@ function gravityForce() {
 }
 
 function getForceNoLorence() {
-	return kullonsForce().add(gravityForce());
-}	
+	return kullonsForce().add(gravityForce()).add(HookesForce());
+}
 
 public function startMoving() {
 	destroyArrow();
@@ -132,19 +193,27 @@ function Start () {
 	defaultDirection = radiusVector().normalize().rotateXZ();
 	drawVelocity();
 	physicsMaker.setVelocity(getVelocity());
+	length = new double[bindingObject.length];
+	bindingMiddle = new GameObject[bindingObject.length];
+	for (var i = 0; i < bindingObject.length; i++) {
+		length[i] = ExactVector((bindingObject[i] as GameObject).GetComponent(Transform).position 
+				- GetComponent(Transform).position).length();
+		bindingMiddle[i] = Instantiate(bindingMiddleCilinder);
+	}
 }
 
 function FixedUpdate() {
-	for (var i = 0; i < 30; i++) {
+	for (var i = 0; i < 200; i++) {
 		var force = getForceNoLorence();
 		var b = B(radiusVector());
 		physicsMaker.applyB(b.multiply(q));
 		physicsMaker.setForce(force);
-		GetComponent(Transform).position = physicsMaker.getPos();
+		GetComponent(Transform).position = physicsMaker.getPos().toVector3();
 	}
 }
 
 function Update () {
+	drawBindings();
 	/*var force = getForceNoLorence();
 	var b = B(radiusVector());
 	physicsMaker.applyB(b.multiply(q));

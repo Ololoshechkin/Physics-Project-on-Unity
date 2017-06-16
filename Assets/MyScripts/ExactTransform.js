@@ -1,4 +1,4 @@
-﻿#pragma strict
+#pragma strict
 
 class ExactTransform {
 
@@ -19,7 +19,7 @@ class ExactTransform {
 		if (bq.length2() == 0.0) {
 			return;
 		}
-		var dt = Time.deltaTime * 0.7;
+		var dt = Time.deltaTime * 0.7 / 200.0;
 		var bn = bq.normalize();
 		bq = bq.multiply(dt / mass);
 		var vt = velocity.scalarProduct(bn);
@@ -37,7 +37,7 @@ class ExactTransform {
 		if (stop) {
 			return;
 		}
-		var dt = Time.deltaTime * 0.7 / 30.0;
+		var dt = Time.deltaTime * 0.7 / 200.0;
 		var acceleration = force.divide(mass);
 		coordinate = coordinate.add(velocity.multiply(dt));
 		velocity = velocity.add(acceleration.multiply(dt));
@@ -52,7 +52,7 @@ class ExactTransform {
 	}
 
 	public function getPos() {
-		return coordinate.toVector3();
+		return coordinate;
 	}
 
 	public function reset(pos: ExactVector, m: double) {

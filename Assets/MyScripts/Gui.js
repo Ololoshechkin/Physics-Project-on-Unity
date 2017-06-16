@@ -5,6 +5,7 @@ import System.Collections.Generic;
 var balls: GameObject[];
 var thread: GameObject;
 var interacter: GameObject;
+var tailTime = 1000.0;
 private var x: float = 20;
 private var y: float = 40;
 private var width: float = 200;
@@ -190,7 +191,7 @@ function Update () {
 			ball.GetComponent(TrailRenderer).time = 0;
 			shouldDeleteTrail--;
 		} else {
-			ball.GetComponent(TrailRenderer).time = 1000;
+			ball.GetComponent(TrailRenderer).time = tailTime;
 		}
 	}
 }

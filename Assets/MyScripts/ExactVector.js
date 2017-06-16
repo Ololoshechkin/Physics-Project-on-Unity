@@ -1,4 +1,4 @@
-﻿#pragma strict
+#pragma strict
 
 import System;
 
@@ -48,6 +48,12 @@ class ExactVector {
 	}
 	public function rotateXZ() {
 		return ExactVector(-z, y, x);
+	}
+	public function rotateXY() {
+		return ExactVector(-y, x, z);
+	}
+	public function rotateYZ() {
+		return ExactVector(x, -z, y);
 	}
 	public function scalarProduct(other: ExactVector) {
 		return x * other.x + y * other.y + z * other.z;
