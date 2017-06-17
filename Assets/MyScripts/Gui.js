@@ -196,6 +196,9 @@ function OnGUI() {
 			ball.GetComponent(Transform).position = getPosition(i);
 			ball.GetComponent(PhysicsBehaviour).gravityOn = gravityOn;
 			ball.GetComponent(PhysicsBehaviour).q = double.Parse(textFields["q"][0].ToString());
+			if (editingKEnabled) {
+				ball.GetComponent(PhysicsBehaviour).k = double.Parse(textFields["k"][0].ToString());
+			}
 			ball.GetComponent(PhysicsBehaviour).mass = double.Parse(textFields["mass"][0].ToString());
 			ball.GetComponent(PhysicsBehaviour).velocityModulo = double.Parse(textFields["velocity"][0].ToString());
 			ball.GetComponent(PhysicsBehaviour).velocityXAlpha = velocityXRotate;
