@@ -1,6 +1,7 @@
 ﻿#pragma strict
 
-var balls: GameObject[]; 
+var cameraObj: GameObject; 
+private var balls: GameObject[] = [];
 var activeE: boolean;
 var activeB: boolean;
 
@@ -34,6 +35,10 @@ function updateForces() {
 }
 
 function Start () {
+	balls = new GameObject[cameraObj.GetComponent(Gui).balls.length];
+	for (var i = 0; i < balls.length; i++) {
+		balls[i] = cameraObj.GetComponent(Gui).balls[i];
+	}
 	updateForces();
 }
 
